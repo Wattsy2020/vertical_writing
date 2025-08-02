@@ -1,8 +1,11 @@
+import sys
 import warnings
 from typing import Iterable
 
 import spacy
 from spacy import tokens
+
+DEFAULT_TEXT_HEIGHT = 8
 
 
 def load_model() -> spacy.language.Language:
@@ -21,8 +24,8 @@ def parse_tokens(text: str, nlp: spacy.language.Language) -> Iterable[tokens.Tok
 
 def make_text_vertical(text: str, text_height: int, nlp: spacy.language.Language) -> str:
     """
-    Convert text into top to bottom, left to right format
-    Use an NLP model to split up the text into words, 
+    A small program to convert Japanese text into top-to-bottom, left-to-right format
+    Uses an NLP model to split up the text into words, 
     to ensure that the words aren't split into different columns
     """
     text_cols = [""]
@@ -40,8 +43,18 @@ def make_text_vertical(text: str, text_height: int, nlp: spacy.language.Language
     return result
 
 
+def get_text_height_arg() -> int:
+    if len(sys.argv) < 2:
+        return DEFAULT_TEXT_HEIGHT
+    if not sys.argv[1].isdecimal():
+        return DEFAULT_TEXT_HEIGHT
+    arg_height = int(sys.argv[1])
+    return arg_height if arg_height > 0 else DEFAULT_TEXT_HEIGHT
+
+
 if __name__ == "__main__":
     nlp = load_model()
-    sentence = "これは日本語で書かれた文です。このプログラムはどの文を縦書きにできる機能を持っています"
-    result = make_text_vertical(sentence, 8, nlp)
+    sentence = input()
+    text_height = get_text_height_arg()
+    result = make_text_vertical(sentence, text_height, nlp)
     print(result)
