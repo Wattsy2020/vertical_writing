@@ -34,8 +34,10 @@ def make_text_vertical(text: str, text_height: int, nlp: spacy.language.Language
             text_cols.append("")
         text_cols[-1] += token.orth_
     
+    # Some words might have more characters then the text_height limit, in which case they will extend the column height 
+    max_height = max(map(lambda str: len(str), text_cols))
     result = ""
-    for row in range(0, text_height):
+    for row in range(0, max_height):
         for col in range(len(text_cols) - 1, -1, -1):
             char = text_cols[col][row] if row < len(text_cols[col]) else '　'
             result += char + ' ' # include space between the columns
